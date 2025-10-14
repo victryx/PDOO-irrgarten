@@ -1,0 +1,59 @@
+# encoding: utf-8
+
+require_relative 'directions'
+require_relative 'game_character'
+require_relative 'orientation'
+require_relative 'weapon'
+require_relative 'shield'
+require_relative 'dice'
+require_relative 'game_state'
+
+module Irrgarten
+
+  class TestP1
+    def self.main
+      w = Weapon.new(Dice.weapon_power, Dice.uses_left)
+      puts w.to_s
+      puts w.attack
+      puts w.discard
+
+      s = Shield.new(Dice.shield_power, Dice.uses_left)
+      puts s.to_s
+      puts s.protect
+      puts s.discard
+
+      g = GameState.new("Laberinto", "Jugadores", "Monstruos", 0, false, "log")
+      puts g.labyrinth
+      puts g.players
+      puts g.monsters
+
+      for i in 1..100 do
+        puts "#{i}: #{Dice.random_strength}"
+      end
+
+      true_counter = 0
+      for i in 1..100 do
+        resurrects = Dice.resurrect_player
+        puts "#{i}: #{resurrects}"
+        if resurrects
+          true_counter += 1;
+        end
+      end
+      puts "Resucita #{true_counter}%\n"
+
+      true_counter = 0
+      for i in 1..100 do
+        discarded = Dice.discard_element(3)
+        puts "#{i}: #{discarded}"
+        if discarded
+          true_counter += 1;
+        end
+      end
+      puts "Descarta #{true_counter}%\n"
+
+    end
+  end
+
+end
+
+Irrgarten::TestP1.main

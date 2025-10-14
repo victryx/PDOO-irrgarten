@@ -6,7 +6,7 @@ package irrgarten;
  * @author vik
  */
 public class GameState {
-    private String labytinth;
+    private String labyrinth;
     private String players;
     private String monsters;
     private int currentPlayer;
@@ -14,7 +14,7 @@ public class GameState {
     private String log;
 
     public GameState(String labytinth, String players, String monsters, int currentPlayer, boolean winner, String log) {
-        this.labytinth = labytinth;
+        this.labyrinth = labytinth;
         this.players = players;
         this.monsters = monsters;
         this.currentPlayer = currentPlayer;
@@ -23,11 +23,11 @@ public class GameState {
     }
 
     public String getLabytinth() {
-        return labytinth;
+        return labyrinth;
     }
 
     public void setLabytinth(String labytinth) {
-        this.labytinth = labytinth;
+        this.labyrinth = labytinth;
     }
 
     public String getPlayers() {
