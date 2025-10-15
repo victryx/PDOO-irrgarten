@@ -1,4 +1,5 @@
-# frozen_string_literal: true
+# encoding: utf-8
+
 module Irrgarten
 
   class Dice
@@ -64,7 +65,8 @@ module Irrgarten
 
     def self.discard_element(uses_left)
       # @@generator.rand devuelve un float entre 0 y 1
-      @@generator.rand < (@@MAX_USES.to_f - uses_left) / @@MAX_USES.to_f
+      # uses_left / MAX_USES es un número entre 0 y 1
+      @@generator.rand > uses_left.to_f / @@MAX_USES.to_f
     end
   end
 

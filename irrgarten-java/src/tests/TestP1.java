@@ -2,7 +2,13 @@ package tests;
 import irrgarten.*;
 
 public class TestP1 {
+    
     public static void main(String[] args) {
+        // testP1()
+        testP2();
+    }
+    
+    private static void testP1() {
         /* 1. Clase Weapon*/
         System.out.println("Prueba clase Weapon");
         Weapon weapon = new Weapon(Dice.weaponPower(), Dice.usesLeft());
@@ -89,5 +95,15 @@ public class TestP1 {
         System.out.printf("Se descarta: %d ejecuciones\nNo se descarta: %d ejecuciones\n",
                 veces_true, 100 - veces_true);
         
+    }
+    
+    private static void testP2() {
+        Monster[][] monsters = new Monster[10][10];
+        
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                System.out.println(monsters[i][j]);
+            }
+        }
     }
 }

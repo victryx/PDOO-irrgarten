@@ -44,13 +44,42 @@ module Irrgarten
       true_counter = 0
       for i in 1..100 do
         discarded = Dice.discard_element(3)
-        puts "#{i}: #{discarded}"
+        # puts "#{i}: #{discarded}"
         if discarded
           true_counter += 1;
         end
       end
-      puts "Descarta #{true_counter}%\n"
+      puts "Descarta #{true_counter}%\n(Debería ser ~40%)\n"
 
+      true_counter = 0
+      for i in 1..100 do
+        discarded = Dice.discard_element(5)
+        # puts "#{i}: #{discarded}"
+        if discarded
+          true_counter += 1;
+        end
+      end
+      puts "Descarta #{true_counter}%\n(Debería ser 0%)\n"
+
+      true_counter = 0
+      for i in 1..100 do
+        discarded = Dice.discard_element(0)
+        # puts "#{i}: #{discarded}"
+        if discarded
+          true_counter += 1;
+        end
+      end
+      puts "Descarta #{true_counter}%\n(Debería ser 100%)\n"
+
+      true_counter = 0
+      for i in 1..100 do
+        discarded = Dice.discard_element(1)
+        # puts "#{i}: #{discarded}"
+        if discarded
+          true_counter += 1;
+        end
+      end
+      puts "Descarta #{true_counter}%\n(Debería ser ~80%)\n"
     end
   end
 
