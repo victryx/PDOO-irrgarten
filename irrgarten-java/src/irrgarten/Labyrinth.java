@@ -108,7 +108,7 @@ public class Labyrinth {
 
     private boolean canStepOn(int row, int col) {
         return posOK(row, col)
-                && labyrinth[row][col] != COMBAT_CHAR
+                && !combatPos(row, col)
                 && labyrinth[row][col] != BLOCK_CHAR;
     }
 

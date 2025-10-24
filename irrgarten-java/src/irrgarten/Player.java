@@ -21,7 +21,7 @@ public class Player {
     private float health;
     private int row;
     private int col;
-    private int consecutiveHits = 0;
+    private int consecutiveHits;
 
     private List<Weapon> weapons;
     private List<Shield> shields;
@@ -30,12 +30,14 @@ public class Player {
         this.number = number;
         this.intelligence = intelligence;
         this.strength = strength;
+        
+        consecutiveHits = 0;
+        health = INITIAL_HEALTH;
         name = "Player #" + number;
+        setPos(-1,-1);
         
         weapons = new ArrayList();
         shields = new ArrayList();
-        
-        setPos(-1,-1);
     }
 
     public void resurrect() {
