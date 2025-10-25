@@ -18,7 +18,7 @@ public class Game {
         // 0 < nPlayers < 10
         monsters = new ArrayList();
         players = new ArrayList(nPlayers);
-        for (int i = 0; i < nPlayers; i++) {
+        for (int i = 0; i <= nPlayers; i++) {
             players.add(new Player((char) (i + '0'), Dice.randomIntelligence(), Dice.randomStrength()));
         }
         currentPlayerIndex = Dice.whoStarts(nPlayers);
@@ -27,12 +27,17 @@ public class Game {
 
         labyrinth = new Labyrinth(10, 10, 0, 0);
         configureLabyrinth();
+        // labyrinth.spreadPlayers(players);
     }
 
     public boolean finished() {
         return labyrinth.haveAWinner();
     }
 
+    public boolean nextStep(Directions preferredDirection) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
     public GameState getGameState() {
         return new GameState(
                 labyrinth.toString(),
@@ -58,7 +63,23 @@ public class Game {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         currentPlayer = players.get(currentPlayerIndex);
     }
+    
+    private Directions actualDirection(Directions preferredDirection) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
+    private GameCharacter combat(Monster monster) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
+    private void manageReward(GameCharacter winner) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
+    private void manageResurrection(GameCharacter winner) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
     private void logPlayerWon() {
         log += "Player " + currentPlayer.getNumber() + " wins\n";
     }

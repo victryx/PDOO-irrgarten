@@ -122,8 +122,8 @@ public class Labyrinth {
         int[] out = {row, col};
         
         switch (direction) {
-            case DOWN  -> out[ROW]--;
-            case UP    -> out[ROW]++;
+            case DOWN  -> out[ROW]++;
+            case UP    -> out[ROW]--;
             case LEFT  -> out[COL]--;
             case RIGHT -> out[COL]++;
         }

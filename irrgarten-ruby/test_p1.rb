@@ -7,6 +7,8 @@ require_relative 'weapon'
 require_relative 'shield'
 require_relative 'dice'
 require_relative 'game_state'
+require_relative 'labyrinth'
+require_relative 'game'
 
 module Irrgarten
 
@@ -83,6 +85,17 @@ module Irrgarten
     end
   end
 
+  class TestP2
+    def self.main
+      l = Labyrinth.new(10, 10, 3, 4)
+      puts l.to_s
+
+      g = Game.new(13)
+
+      puts g.get_game_state.labyrinth.to_s
+    end
+  end
+
 end
 
-Irrgarten::TestP1.main
+Irrgarten::TestP2.main
