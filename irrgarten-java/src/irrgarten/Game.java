@@ -25,9 +25,9 @@ public class Game {
         currentPlayer = players.get(currentPlayerIndex);
         log = "";
 
-        labyrinth = new Labyrinth(10, 10, 0, 0);
+        labyrinth = new Labyrinth(10, 10, 1, 1);
         configureLabyrinth();
-        // labyrinth.spreadPlayers(players);
+        labyrinth.spreadPlayers(players.toArray(new Player[players.size()]));
     }
 
     public boolean finished() {
@@ -35,7 +35,29 @@ public class Game {
     }
 
     public boolean nextStep(Directions preferredDirection) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (!currentPlayer.dead()) {
+            Directions direction = actualDirection(preferredDirection);
+            if (direction != preferredDirection) {
+                logPlayerNoOrders();
+            }
+            Monster monster = labyrinth.putPlayer(direction, currentPlayer);
+            
+            if (monster == null) {
+                logNoMonster();
+            } else {
+                GameCharacter winner = combat(monster);
+                manageReward(winner);
+            }
+        
+        } else {
+            manageResurrection();
+        }
+        
+        boolean endGame = finished();
+        if (!endGame) {
+            nextPlayer();
+        }
+        return endGame;
     }
     
     public GameState getGameState() {
@@ -50,6 +72,7 @@ public class Game {
     }
 
     private void configureLabyrinth() {
+        // TODO: esto se puede hacer con posiciones aleatorias
         Monster m1 = new Monster("1", Dice.randomIntelligence(), Dice.randomStrength());
         monsters.add(m1);
         labyrinth.addMonster(1, 0, m1);
@@ -57,6 +80,7 @@ public class Game {
         monsters.add(m1);
         labyrinth.addMonster(2, 1, m1);
         
+        labyrinth.addBlock(Orientation.HORIZONTAL, 0, 0, 10);
     }
 
     private void nextPlayer() {
@@ -65,18 +89,52 @@ public class Game {
     }
     
     private Directions actualDirection(Directions preferredDirection) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        int currentRow = currentPlayer.getRow();
+        int currentCol = currentPlayer.getCol();
+        Directions[] validMoves = labyrinth.validMoves(currentRow, currentCol);
+        return currentPlayer.move(preferredDirection, validMoves);
     }
 
     private GameCharacter combat(Monster monster) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        int rounds = 0;
+        GameCharacter winner = GameCharacter.PLAYER;
+        
+        float playerAttack = currentPlayer.attack();
+        boolean lose = monster.defend(playerAttack);
+        while (!lose && rounds < MAX_ROUNDS) {
+            winner = GameCharacter.MONSTER;
+            rounds++;
+            float monsterAttack = monster.attack();
+            lose = currentPlayer.defend(monsterAttack);
+            
+            if (!lose) {
+                playerAttack = currentPlayer.attack();
+                winner = GameCharacter.PLAYER;
+                lose = monster.defend(playerAttack);
+            }
+        }
+        
+        logRounds(rounds, MAX_ROUNDS);
+
+        return winner;
     }
     
     private void manageReward(GameCharacter winner) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (winner == GameCharacter.PLAYER) {
+            currentPlayer.receiveReward();
+            logPlayerWon();
+        } else {
+            logMonsterWon();
+        }        
     }
     
-    private void manageResurrection(GameCharacter winner) {
+    private void manageResurrection() {
+        if (Dice.resurrectPlayer()) {
+            currentPlayer.resurrect();
+            logResurrected();
+        } else {
+            logPlayerSkipTurn();
+        }
         throw new UnsupportedOperationException("Not implemented yet");
     }
     

@@ -22,12 +22,12 @@ public class GameState {
         this.log = log;
     }
 
-    public String getLabytinth() {
+    public String getLabyrinth() {
         return labyrinth;
     }
 
-    public void setLabytinth(String labytinth) {
-        this.labyrinth = labytinth;
+    public void setLabyrinth(String labyrinth) {
+        this.labyrinth = labyrinth;
     }
 
     public String getPlayers() {

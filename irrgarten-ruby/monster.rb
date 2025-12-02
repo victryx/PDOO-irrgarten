@@ -20,7 +20,10 @@ module Irrgarten
     end
 
     def defend(received_attack)
-
+      if !dead && Dice.intensity(@intelligence) < received_attack
+        got_wounded
+      end
+      dead
     end
 
     def set_pos(row, col)

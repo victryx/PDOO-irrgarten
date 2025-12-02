@@ -25,7 +25,10 @@ module Irrgarten
     end
 
     def spread_players(players)
-
+      players.each do |player|
+        pos = random_empty_pos
+        put_player_2d(-1, -1, pos[@@ROW], pos[@@COL], player)
+      end
     end
 
     def have_a_winner
@@ -48,20 +51,51 @@ module Irrgarten
     def add_monster(row, col, monster)
       if pos_ok(row, col) && empty_pos(row, col)
         @monsters[row][col] = monster
-        monster.set_pos(row,col)
+        monster.set_pos(row, col)
       end
     end
 
     def put_player(direction, player)
-
+      old_row = player.row
+      old_col = player.col
+      new_pos = dir_2_pos(old_row, old_col, direction)
+      put_player_2d(old_row, old_col, new_pos[@@ROW], new_pos[@@COL], player)
     end
 
     def add_block(orientation, start_row, start_col, length)
+      inc_row = 0
+      inc_col = 1
+      if orientation == Orientation::VERTICAL
+        inc_row = 1
+        inc_col = 0
+      end
+      row = start_row
+      col = start_col
 
+      while pos_ok(row, col) && empty_pos(row, col) && length > 0
+        @labyrinth[row][col] = @@BLOCK_CHAR
+        length -= 1
+        row += inc_row
+        col += inc_col
+      end
     end
 
     def valid_moves(row, col)
+      output = []
+      if can_step_on(row + 1, col)
+        output.push(Directions::DOWN)
+      end
+      if can_step_on(row - 1, col)
+        output.push(Directions::UP)
+      end
+      if can_step_on(row, col + 1)
+        output.push(Directions::RIGHT)
+      end
+      if can_step_on(row, col - 1)
+        output.push(Directions::LEFT)
+      end
 
+      output
     end
 
     private
@@ -104,26 +138,44 @@ module Irrgarten
       when Directions::UP
         out[@@ROW] -= 1
       when Directions::LEFT
-        out[@@COL] += 1
-      when Directions::LEFT
         out[@@COL] -= 1
+      when Directions::RIGHT
+        out[@@COL] += 1
       end
-      zz      out
+      out
     end
 
-    def random_empty_pos()
-      row, col = 0
+    def random_empty_pos
+      row = 0
+      col = 0
       loop do
         row = Dice.random_pos(@n_rows)
         col = Dice.random_pos(@n_cols)
-        break unless empty_pos(row, col)
+        break if empty_pos(row, col)
       end
       [row, col]
     end
 
     def put_player_2d(old_row, old_col, row, col, player)
+      output = nil
+      if can_step_on(row, col)
+        if pos_ok(old_row, old_col) && @players[old_row][old_col] == player
+          update_old_pos(old_row, old_col)
+          @players[old_row][old_col] = nil
+        end
 
+        if monster_pos(row, col)
+          @labyrinth[row][col] = @@COMBAT_CHAR;
+          output = @monsters
+        else
+          @labyrinth[row][col] = player.number.to_s
+        end
+        @players[row][col] = player
+        player.set_pos(row, col)
+      end
+
+      output
     end
-
   end
 end
+

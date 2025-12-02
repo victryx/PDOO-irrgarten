@@ -92,7 +92,7 @@ module Irrgarten
 
       g = Game.new(13)
 
-      puts g.get_game_state.labyrinth.to_s
+      puts g.game_state.labyrinth.to_s
     end
   end
 

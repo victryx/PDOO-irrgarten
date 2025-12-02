@@ -1,12 +1,9 @@
 package irrgarten;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-/**
- *
- * @author vik
- */
 public class Player {
 
     private static int MAX_WEAPONS = 2;
@@ -30,12 +27,12 @@ public class Player {
         this.number = number;
         this.intelligence = intelligence;
         this.strength = strength;
-        
+
         consecutiveHits = 0;
         health = INITIAL_HEALTH;
         name = "Player #" + number;
-        setPos(-1,-1);
-        
+        setPos(-1, -1);
+
         weapons = new ArrayList();
         shields = new ArrayList();
     }
@@ -69,7 +66,10 @@ public class Player {
     }
 
     public Directions move(Directions direction, Directions[] validMoves) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (!Arrays.asList(validMoves).contains(direction) && validMoves.length > 0) {
+            return validMoves[0];
+        }
+        return direction;
     }
 
     public float attack() {
@@ -81,7 +81,19 @@ public class Player {
     }
 
     public void receiveReward() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        int wReward = Dice.weaponsReward();
+        int sReward = Dice.shieldsReward();
+
+        for (int i = 0; i < wReward; i++) {
+            Weapon wnew = newWeapon();
+            receiveWeapon(wnew);
+        }
+        for (int i = 0; i < sReward; i++) {
+            Shield snew = newShield();
+            receiveShield(snew);
+        }
+        
+        health += Dice.healthReward();
     }
 
     @Override
@@ -90,21 +102,27 @@ public class Player {
     }
 
     private void receiveWeapon(Weapon w) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        weapons.removeIf(we -> we.discard());
+        
+        if (weapons.size() < MAX_WEAPONS)
+            weapons.add(w);
     }
 
     private void receiveShield(Shield s) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        shields.removeIf(sh -> sh.discard());
+        
+        if (shields.size() < MAX_SHIELDS)
+            shields.add(s);
     }
-    
+
     private Weapon newWeapon() {
         return new Weapon(Dice.weaponPower(), Dice.usesLeft());
     }
-    
+
     private Shield newShield() {
         return new Shield(Dice.shieldPower(), Dice.usesLeft());
     }
-    
+
     private float sumWeapons() {
         float sum = 0;
         for (Weapon w : weapons) {
@@ -112,7 +130,7 @@ public class Player {
         }
         return sum;
     }
-    
+
     private float sumShields() {
         float sum = 0;
         for (Shield s : shields) {
@@ -120,23 +138,36 @@ public class Player {
         }
         return sum;
     }
-    
+
     private float defensiveEnergy() {
         return intelligence + sumShields();
     }
 
     private boolean manageHit(float receivedAttack) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        float defense = defensiveEnergy();
+        if (defense < receivedAttack) {
+            gotWounded();
+            incConsecutiveHits();
+        } else {
+            resetHits();
+        }
+
+        boolean lose = consecutiveHits == HITS2LOSE || dead();
+        if (lose) {
+            resetHits();
+        }
+
+        return lose;
     }
-    
+
     private void resetHits() {
         consecutiveHits = 0;
     }
-    
+
     private void gotWounded() {
         health--;
     }
-    
+
     private void incConsecutiveHits() {
         consecutiveHits++;
     }

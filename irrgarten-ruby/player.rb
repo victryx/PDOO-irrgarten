@@ -16,15 +16,13 @@ module Irrgarten
       @strength = strength
       @health = @@INITIAL_HEALTH
       @consecutive_hits = 0
-      @row = -1
-      @col = -1
+      set_pos(-1, -1)
+
       @weapons = []
       @shields = []
     end
 
-
     attr_reader :row, :col, :number # (getters)
-
 
     def resurrect
       @health = @@INITIAL_HEALTH
@@ -43,7 +41,10 @@ module Irrgarten
     end
 
     def move(direction, valid_moves)
-
+      if !valid_moves.include?(direction) && valid_moves.size > 0
+        return valid_moves[0]
+      end
+      direction
     end
 
     def attack
@@ -55,7 +56,15 @@ module Irrgarten
     end
 
     def receive_reward
-
+      wReward = Dice.weapons_reward
+      sReward = Dice.shields_reward
+      (0...wReward).each do
+        receive_weapon(new_weapon)
+      end
+      (0...sReward).each do
+        receive_shield(new_shield)
+      end
+      @health += Dice.health_reward
     end
 
     def to_s
@@ -65,11 +74,23 @@ module Irrgarten
     private
 
     def receive_weapon(w)
+      @weapons.delete_if do |we|
+        we.discard
+      end
 
+      if @weapons.size < @@MAX_WEAPONS
+        @weapons.push(w)
+      end
     end
 
     def receive_shield(s)
+      @shields.delete_if do |sh|
+        sh.discard
+      end
 
+      if @shields.size < @@MAX_SHIELDS
+        @shields.push(s)
+      end
     end
 
     def new_weapon
@@ -105,7 +126,20 @@ module Irrgarten
     end
 
     def manage_hit(received_attack)
+      defense = defensive_energy
+      if defense < received_attack
+        got_wounded
+        inc_consecutive_hits
+      else
+        reset_hits
+      end
 
+      lose = @consecutive_hits == @@HITS2LOSE || dead
+      if lose
+        reset_hits
+      end
+
+      lose
     end
 
     def got_wounded
@@ -115,8 +149,6 @@ module Irrgarten
     def inc_consecutive_hits
       @consecutive_hits += 1
     end
-
-
 
   end
 end
